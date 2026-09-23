@@ -1,0 +1,43 @@
+# SABFNet dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.23
+Pillow>=9.0
+pyyaml>=6.0
+scipy>=1.10          # for optional spatial ops
+tqdm>=4.65
+
+# Optional: CUDA-accelerated Mamba SSM
+# Install manually if GPU is available:
+#   pip install mamba-ssm causal-conv1d
+# Without it, a CPU-compatible fallback (_SimpleSSM) is used automatically.
+
+# For reading GeoTIFF dataset files
+rasterio>=1.3         # optional — PIL/tifffile can also read .tif
+tifffile>=2023.1      # optional fallback for .tif reading
+
+
+
+
+# 安装依赖
+pip install -r requirements.txt
+# (可选，有 GPU 时) pip install mamba-ssm causal-conv1d
+
+# 训练 (以 Vaihingen 为例)
+python train.py --config configs/vaihingen.yaml
+
+# 从断点继续训练
+python train.py --config configs/vaihingen.yaml --resume checkpoints/vaihingen/epoch_020.pth
+
+# 评估最优模型
+python test.py --config configs/vaihingen.yaml \
+               --checkpoint checkpoints/vaihingen/best_model.pth \
+               --save_pred outputs/vaihingen_preds
+
+
+
+
+使用前需修改 YAML 配置中的路径：
+
+dataset.root → 改为你的数据集实际路径
+model.pretrained_path → 改为 R50+ViT-B_16.npz 的实际路径
