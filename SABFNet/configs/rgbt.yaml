@@ -1,0 +1,45 @@
+# ── SABFNet  ·  RS-RGB-T UAV Training Config ─────────────────────────────────
+
+dataset:
+  name        : rgbt
+  root        : /data/RS-RGB-T            # ← change to your dataset path
+  patch_size  : 256
+  val_ratio   : 0.3                       # 70% train / 30% val (no fixed split)
+  n_classes   : 7
+
+dataloader:
+  batch_size  : 1
+  num_workers : 4
+  pin_memory  : true
+
+model:
+  config_name    : SABFNet-R50
+  pretrained     : true
+  pretrained_path: pretrained/R50+ViT-B_16.npz
+  n_classes      : 7                      # override from base config
+
+loss:
+  lambda_ce  : 1.0
+  lambda_dice: 1.0
+  ignore_index: 255
+
+optimizer:
+  type        : AdamW
+  lr          : 0.0001
+  weight_decay: 0.01
+  betas       : [0.9, 0.999]
+
+scheduler:
+  type       : cosine
+  T_max      : 50
+  eta_min    : 1.0e-6
+
+training:
+  epochs     : 50
+  log_every  : 10
+  val_every  : 1
+  save_dir   : checkpoints/rgbt
+  log_dir    : logs/rgbt
+
+seed: 42
+device: cuda
